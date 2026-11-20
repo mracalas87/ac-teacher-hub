@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Mr Andy's Teacher Hub</title>
+<style>
+:root{--bg:#F4F1EA;--ink:#1F2430;--card:#FFFFFF;--line:#D9D3C7;--muted:#5A6070;--a:#1F6FEB;--b:#0F8A5F}
+@media (prefers-color-scheme:dark){:root{--bg:#171A21;--ink:#F2F0EA;--card:#222733;--line:#38404F;--muted:#A9B0BF;--a:#6EA8FF;--b:#4FD1A0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+main{max-width:980px;margin:0 auto;padding:40px 16px 56px}
+h1{font-size:clamp(1.8rem,5vw,2.6rem);margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 32px;font-size:1.05rem}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+a.card{display:flex;flex-direction:column;gap:10px;min-height:230px;padding:26px;border-radius:20px;background:var(--card);border:2px solid var(--line);color:inherit;text-decoration:none;border-top:8px solid var(--c)}
+a.card:hover,a.card:focus-visible{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.14);outline:3px solid var(--c);outline-offset:2px}
+.card h2{margin:0;font-size:1.6rem}
+.card p{margin:0;color:var(--muted);flex:1}
+.go{align-self:flex-start;padding:12px 22px;border-radius:999px;background:var(--c);color:#fff;font-weight:700;font-size:1.05rem}
+.card.off{--c:#8A8F9C;pointer-events:none;opacity:.8}
+.tag{font-size:.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+footer{margin-top:36px;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>Teacher Hub</h1>
+  <p class="sub">Everything in one place. Choose a tool.</p>
+  <div class="grid" id="grid"></div>
+  <footer>Each tool opens in the same tab. Use your browser's back button to return here.</footer>
+</main>
+<script>
+/* Put each tool's address here. Leave url empty and the card shows as "link needed". */
+var TOOLS=[
+  {tag:'Grade and report',title:'Markbook',text:'Mark objectives, track attainment and write pupil reports.',url:'https://ac-markbook.vercel.app',color:'#1F6FEB',btn:'Open Markbook'},
+  {tag:'Assess and evidence',title:'Assessment and Evidence',text:'Pupil portfolio work and your judgements. Only you can see this.',url:'',color:'#0F8A5F',btn:'Open Assessment and Evidence'}
+];
+var g=document.getElementById('grid');
+TOOLS.forEach(function(t){
+  var a=document.createElement('a');a.className='card'+(t.url?'':' off');a.style.setProperty('--c',t.color);
+  if(t.url)a.href=t.url;else a.setAttribute('aria-disabled','true');
+  a.innerHTML='<span class="tag"></span><h2></h2><p></p><span class="go"></span>';
+  a.querySelector('.tag').textContent=t.tag;a.querySelector('h2').textContent=t.title;a.querySelector('p').textContent=t.text;
+  a.querySelector('.go').textContent=t.url?t.btn:'Link needed';
+  g.appendChild(a);
+});
+</script>
+</body>
+</html>
