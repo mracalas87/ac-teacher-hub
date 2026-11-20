@@ -22,41 +22,49 @@ a.card:hover,a.card:focus-visible,button.card:hover,button.card:focus-visible{tr
 .card.off{--c:#8A8F9C;pointer-events:none;opacity:.8}
 .tag{font-size:.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 dialog{border:2px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink);padding:28px;max-width:360px;width:calc(100% - 32px)}dialog::backdrop{background:rgba(0,0,0,.55)}dialog h2{margin:0 0 6px}dialog p{margin:0 0 14px;color:var(--muted)}#pinIn{width:100%;font-size:2rem;letter-spacing:.5em;text-align:center;padding:12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}#pinErr{min-height:1.4em;color:#C0392B;font-weight:700;margin:8px 0}.row{display:flex;gap:10px}.row button{flex:1;min-height:52px;border-radius:999px;border:2px solid var(--ink);font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;background:var(--card);color:var(--ink)}.row button.ok{background:var(--a);border-color:var(--a);color:#fff}
+.back{min-height:48px;padding:0 20px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);font:inherit;font-weight:700;cursor:pointer;margin-bottom:18px}[hidden]{display:none!important}
 footer{margin-top:36px;color:var(--muted);font-size:.9rem}
 </style>
 </head>
 <body>
 <main>
+  <div id="home">
   <h1>The System</h1>
   <p class="sub">Everything in one place. Choose a part of the system.</p>
   <div class="grid" id="grid"></div>
+  </div>
+  <div id="sub" hidden>
+  <button type="button" class="back" id="back">&larr; Back to The System</button>
+  <h1>Assessment and Evidence</h1>
+  <p class="sub">Choose where to go. These open in a new tab.</p>
+  <div class="grid" id="subgrid"></div>
+  </div>
   <dialog id="pin" aria-labelledby="pinT"><form id="pinForm"><h2 id="pinT">Enter PIN</h2><p>This part of the system is locked.</p><input id="pinIn" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" aria-label="PIN"><div id="pinErr" role="alert"></div><div class="row"><button type="button" id="pinCancel">Cancel</button><button type="submit" class="ok">Unlock</button></div></form></dialog>
 <footer>Each tool opens in the same tab. Use your browser's back button to return here.</footer>
 </main>
 <script>
-/* Put each tool's address here. Leave url empty and the card shows as "link needed". */
 var TOOLS=[
-  {tag:'Grade and report',title:'Markbook',text:'Mark objectives, track attainment and write pupil reports.',url:'https://ac-markbook.vercel.app',color:'#1F6FEB',pin:1,btn:'Open Markbook'},
-  {tag:'Assess and evidence',title:'Assessment and Evidence',text:'Pupil portfolio work and your judgements. Only you can see this.',url:'https://script.google.com/a/macros/kingscollegeschool.pt/s/AKfycbzT52IVUXK9FUc-evARV1_kIpUBTqRGTM02RDzfKRU_9ONKdLXszzsxjEq4JQ-XIeJJ/exec',color:'#0F8A5F',pin:1,btn:'Open Assessment and Evidence'},
-  {tag:'Pupil work',title:'Pupil Portfolios',text:'The Drive folder of saved pupil work, sorted by year and pupil.',url:'https://drive.google.com/drive/folders/1LxYp1Tz_MI3ESj-1b14vUf8KX3wiTjXi',color:'#7C4FD1',btn:'Open the folder'}
+  {tag:'Grade and report',title:'Markbook',text:'Mark objectives, track attainment and write pupil reports.',color:'#1F6FEB',btn:'Open Markbook',kind:'mb',url:'https://ac-markbook.vercel.app'},
+  {tag:'Assess and evidence',title:'Assessment and Evidence',text:'Pupil portfolio site, pupil folders and pupil data. Only you can see this.',color:'#0F8A5F',btn:'Enter',kind:'ae'}
 ];
-var HASH='9902f4f3993245608527ce9ff26fddb075c76164f56839139556b3be28b8cacf';
-var g=document.getElementById('grid'),dlg=document.getElementById('pin'),inp=document.getElementById('pinIn'),err=document.getElementById('pinErr'),pend=null;
+var HASH='9902f4f3993245608527ce9ff26fddb075c76164f56839139556b3be28b8cacf',V={s:'YMQQhi5hj+ujVyP/q9sivg==',i:'IvEPvcwIAcg2nmuU',c:'K2+gRUHppDPHpARBRylwTmVMS6lYVo2hjEE+2vgxucreqCBLohg2HLvkNUQd2hHuPlCd3kz4i1IQe0P/fOkkD18pbycwynfcqSzxUhni73R5JGHgQPu2rNAK7iFfl0ScEx7lQh8iaUN2fMAkPbFIxg4lLrO7PM62JNa38xsZf8QaAGL0tJ5Z1XXilIN5ilWZz31V7hnlJ1GeYZnkmDmrdKO7VxQJFjiJ9o5Ti0yT2YLOS4o1X/v2w8KXYLMT+VTG3a4KjIybsfAX453Llc4HDHU2rtbLBthzX0MPopWDrc+FQ65wSB+OMwZoZVN/VJ83iLqrjz711XeGRnL9JfNXsGJeqSTY39zmwiXWZ8ZWv8rOZmjLrq4tVyTn4vXYaDrbDeklQUTuaOaL4J0Kme9NlGbhQgVVMfu4lK7X4WkR3GbU60DHItGD2EZ66bImLs6gns3IZcXLYJQeW4nK7pQrSyQJTOt5+KfIlTwVan31lTNnUE020v5ZR/JgirKjkcpp2K4Dho3Rez2+yN3zkdQNl2nwy1403dpk3R5QYX91R21+B0toVNRtM62ct1IdBJ3hrqQkkSSL48D7zVCJIrPr3aTC0OMyCTYP5BuqywVU1MPO8JTXz+8w84LAGJ64qSFDuSSrvvi3iFTg/Xg7W50xLVIVwecJXS3UCxNcHvXnWINMenckRSdlRCUIkdi5aWB2lkcJz7OuKKFkkRpXq48sS/T6fC7oKqKgLwsgn+LghSmKbxILe257ouB2nK2jw2p9wCy3rFdl28o3WUPR/Ze/uPPHNPq7HhUoTg+qe6W9ebzXdKFF9aTWdJUtXsgzT9eTEsKT9bOuldLgCAQirACGS18YEpN7WN68WnIQC1Luay+TCTQCdw4kSNGLCyzEt5niEpoJTztnE+5BTFpJjz6enFGzIvf6/MhBafQ6Un+QyrGyOLtZ4bMegKRt1aT5koZa8Vxmmo6GD2iXsrbr3HbTUW8vEKEzBqoM6hESlZDqjj8UCdvWuFMRq0PvJDunTZ0bM0xxZWyfuowRKnX9MSxY'};
+function d64(x){return Uint8Array.from(atob(x),function(c){return c.charCodeAt(0)})}
 function sha(t){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')})}
-function unlocked(){try{return sessionStorage.getItem('sys-ok')==='1'}catch(e){return false}}
-function go(u){location.href=u}
-function ask(u){if(unlocked()){go(u);return}pend=u;inp.value='';err.textContent='';dlg.showModal();inp.focus()}
-document.getElementById('pinForm').addEventListener('submit',function(e){e.preventDefault();sha('system:'+inp.value.trim()).then(function(h){if(h===HASH){try{sessionStorage.setItem('sys-ok','1')}catch(x){}dlg.close();go(pend)}else{err.textContent='That PIN is not right. Try again.';inp.value='';inp.focus()}})});
+function vault(pin){return crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveKey']).then(function(k){return crypto.subtle.deriveKey({name:'PBKDF2',salt:d64(V.s),iterations:600000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt'])}).then(function(k){return crypto.subtle.decrypt({name:'AES-GCM',iv:d64(V.i)},k,d64(V.c))}).then(function(p){return JSON.parse(new TextDecoder().decode(p))})}
+function check(kind,pin){return kind==='ae'?vault(pin):sha('system:'+pin).then(function(h){if(h!==HASH)throw 0;return true})}
+function saved(){try{return sessionStorage.getItem('sys-pin')||''}catch(e){return ''}}
+function save(p){try{sessionStorage.setItem('sys-pin',p)}catch(e){}}
+var g=document.getElementById('grid'),home=document.getElementById('home'),sub=document.getElementById('sub'),sg=document.getElementById('subgrid'),dlg=document.getElementById('pin'),inp=document.getElementById('pinIn'),err=document.getElementById('pinErr'),pend=null,busy=false;
+function card(t,tag,extra){var a=document.createElement(tag);a.className='card';a.style.setProperty('--c',t.color);a.innerHTML='<span class="tag"></span><h2></h2><p></p><span class="go"></span>';a.querySelector('.tag').textContent=(extra?'🔒 ':'')+t.tag;a.querySelector('h2').textContent=t.title;a.querySelector('p').textContent=t.text;a.querySelector('.go').textContent=t.btn;return a}
+function proceed(kind,res,t){if(kind==='mb'){location.href=t.url;return}
+  sg.innerHTML='';res.forEach(function(p){var a=card(p,'a');a.href=p.url;a.target='_blank';a.rel='noopener';sg.appendChild(a)});home.hidden=true;sub.hidden=false;window.scrollTo(0,0)}
+function ask(t){pend=t;var p=saved();if(p){check(t.kind,p).then(function(r){proceed(t.kind,r,t)},function(){show()});return}show()}
+function show(){inp.value='';err.textContent='';dlg.showModal();inp.focus()}
+document.getElementById('pinForm').addEventListener('submit',function(e){e.preventDefault();if(busy)return;busy=true;var p=inp.value.trim();err.textContent='Checking…';
+  check(pend.kind,p).then(function(r){save(p);busy=false;dlg.close();proceed(pend.kind,r,pend)},function(){busy=false;err.textContent='That PIN is not right. Try again.';inp.value='';inp.focus()})});
 document.getElementById('pinCancel').addEventListener('click',function(){dlg.close()});
-TOOLS.forEach(function(t){
-  var a=document.createElement(t.pin&&t.url?'button':'a');a.className='card'+(t.url?'':' off');a.style.setProperty('--c',t.color);
-  if(t.pin&&t.url){a.type='button';a.addEventListener('click',function(){ask(t.url)})}
-  else if(t.url)a.href=t.url;else a.setAttribute('aria-disabled','true');
-  a.innerHTML='<span class="tag"></span><h2></h2><p></p><span class="go"></span>';
-  a.querySelector('.tag').textContent=(t.pin?'🔒 ':'')+t.tag;a.querySelector('h2').textContent=t.title;a.querySelector('p').textContent=t.text;
-  a.querySelector('.go').textContent=t.url?t.btn:'Link needed';
-  g.appendChild(a);
-});
+document.getElementById('back').addEventListener('click',function(){sub.hidden=true;home.hidden=false;sg.innerHTML=''});
+TOOLS.forEach(function(t){var a=card(t,'button',1);a.type='button';a.addEventListener('click',function(){ask(t)});g.appendChild(a)});
 </script>
 </body>
 </html>
