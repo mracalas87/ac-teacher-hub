@@ -36,8 +36,8 @@ footer{margin-top:36px;color:var(--muted);font-size:.9rem}
   </div>
   <div id="sub" hidden>
   <button type="button" class="back" id="back">&larr; Back to The System</button>
-  <h1>Assessment and Evidence</h1>
-  <p class="sub">Choose where to go. These open in a new tab.</p>
+  <h1 id="subT">Assessment and Evidence</h1>
+  <p class="sub" id="subS">Choose where to go. These open in a new tab.</p>
   <div class="grid" id="subgrid"></div>
   </div>
   <dialog id="pin" aria-labelledby="pinT"><form id="pinForm"><h2 id="pinT">Enter PIN</h2><p>This part of the system is locked.</p><input id="pinIn" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" aria-label="PIN"><div id="pinErr" role="alert"></div><div class="row"><button type="button" id="pinCancel">Cancel</button><button type="submit" class="ok">Unlock</button></div></form></dialog>
@@ -46,13 +46,14 @@ footer{margin-top:36px;color:var(--muted);font-size:.9rem}
 <script>
 var TOOLS=[
   {tag:'Grade and report',title:'Markbook',text:'Mark objectives, track attainment and write pupil reports.',color:'#1F6FEB',btn:'Open Markbook',kind:'mb',url:'https://ac-markbook.vercel.app'},
-  {tag:'Assess and evidence',title:'Assessment and Evidence',text:'Pupil portfolio site, pupil folders and pupil data. Only you can see this.',color:'#0F8A5F',btn:'Enter',kind:'ae'}
+  {tag:'Assess and evidence',title:'Assessment and Evidence',text:'Pupil portfolio site, pupil folders and pupil data. Only you can see this.',color:'#0F8A5F',btn:'Enter',kind:'ae'},
+  {tag:'Rewards',title:'KCS Dojo Rewards',text:'The Dojo rewards app, the Dojo sheet and the Dojo uploads folder. Only you can see this.',color:'#B45309',btn:'Enter',kind:'dj'}
 ];
-var HASH='9902f4f3993245608527ce9ff26fddb075c76164f56839139556b3be28b8cacf',V={s:'kcOuX4rhQZKBEKE366ZRmQ==',i:'gZdwH9CxXy7ejpn5',c:'Xw0l4/QbYZ9kfPYYZVprdy5cJ4VF7GE0h8Pvj5G2xH3hK8x7tpqWMNEqxBLngiT9HMhH4cwqM0GB0e9W8kv59yZPSrLaQxa0XEPH2nvMCzIi8NP8ah2Ab/3kT4LdeE4w4cslG2fxBkq8I4lx6f5qH5UOolS6jskh9aZ9T6/PJL2xAHXC2BGTHoqxzesouvuUPzlybjkJY+3iILTIZl9jvIti8wDs517qhfvDbYt88mNZKF/QBTursmdmj3IbXu38hbPWLgfcBO7BnYVyYzZTKhdiwQKOGZY8RwQhFhRMjXURuI2IMcy2qcxYcWCIK/LcNpicuol22tsg8HEsEEBaU1CVhtch6TLW6acHDTqHXyaMAn0/Z8S1B3tZHgA9aLGB53jXyI97YImRH6CZo5hHME2HJlz4ckCTWSRVuo7deWJ628vH55+LM2dAiU93eaVRBRQvo3LO510emf1nhl9DTPnCy2d8UyBVqObkVgUVWIBHeD+WzpJbuv4UmLHLhcwQfgvN5Wq4HNHPPEWfcQqUi1y/wqu3kX9/lvWEqQnF8ia9dMJl/WaLjTQPNk3DO/5fumVWXJ7jth0n2CD0Un1a0Y1fVSJsvsB5DAZTCIvXvG7T3nSDkzZoH6iSdXsXUwXbu64R/WT6qxPSkWX/plAQlvBwR10vsrx+UkZXjyeNjnHb8pFH/7t45gVTmXSWzHzFaUQr+LRKjRXzOKSgjWfQvrbpJCn5EFGCgxGvI6S8O2PPASa0njSnzDUod/1QeaZHLxlK6Jd4KNcoMfa4RV14U4ZAmfa4+DFwg9/7QmIReDnN5k4HCGca5Nqcz6OUR5WEZaGKmyvFrd5oKRWae5vriA5HIOHUzoxvO+2FRIhKI3dHjk2pGeij6NMKZkL89Ov+A0awtzVtceUbXsyW8HxOniiGyN8DoZRnoO+a8KpzV0wJZm5GeKpv0+Mou0hl6o7kzZ5zonKjqJXlBvtvRNpp2N7Tsvy2bc7t/RBJ8TY+vww9fhfs39UZFx7p'};
+var HASH='9902f4f3993245608527ce9ff26fddb075c76164f56839139556b3be28b8cacf',V={s:'FWiqvZxWLB/EKFWx3VlC2g==',i:'4IMmadVwmaHHHu49',c:'TV0vpk9gFp1ENZK+PHPoY8/9IHSpTJhw6hSxXiaVozlsxjq+wFiOAKTtabJEzPzeFqkVrmUsnFV9p5UMZdq6CNXqABOgwCEZpbbdrPShxqKrUSuMo8FrexGgiJ3a8oqihTvOwXCRvt4Mw/THgCuDbDEqC/UX34VpPm4CjNC63tBdlzst9JGdlDYyUy99KAb5VcND1GBrIV+mQCeSijmw9r5jJGIn3567nYTShG/kiMUajSIkUu/cqJ+85r939ECcXgwqaUVxk9z2mZy2BWiCTdCLN64yvCWGlp8CaYf+1lAPYOx4WVaOF6D2dwZNYktXIao7Pj0Z88s+lYgwe/ISvX0r9TT8CeFejcPnLSa16Yo6lCV6jNHtDlr+zrSBfTt0OiU2GtvOo+un2m5QurTpqCA1jm+9LwD84uFnzsWLBb7NdEX/jp+a6eiE/q+c/zYv35m9Ayi3mHJv75vJk63jzi2cLZ5kJ5jQAievGdM+p62A4FoIP7tmqtO0K2wGiOj0yDAr3CZ5N/1AMDtqAszVZasTisgfx2HyvUci9E48MDjFC6wa7yP+Iaqb0eTBX6gp07OdGK6vZa3iVmdTsDiUN0LD8tOvfM9ii33f//G8w7D7YF3xUXwvvXyeA7CEtzllpKCD0yanJ1LWXJfIEDqb1oUy8agrV88XrKaUybzg98EA0eC2owf9Ng2F8VO40uLYZlszl25neWJNQyYUZI9pNGSDJ4odLkKCwH35dc90SpyB7yn0Khkaf4PUsSDrdmKFJgnQhmxTpSULGv4WbYSdEKJpYrUzEbyDI3G8FXaEZtQFSvwhBRhpdOff/+v4wwN9bjoU3PmcdYDuvbWrRixXGR4LrslINVWwM+1JmDfjKj0iTtEvVN8vEXTqGGZc0hZx9B14DH/lx1xBMJvhWx0NqLjiBLTUpD/ZrLrEPNpwQrfrhgY5DTrOOAIh/K3Qw5mWKlSdDmaJg6y98QIIigSerBuJB5ns60XyPWanWM9GK2wFCNSteFtWGibCUnqZrwlwKJtYxrxFQly6K9h3tR/hwP5An3o0bXWRJqBjRyA+Usv4WwGkROdRMcbGe98duvwcrzt8ztfFqRGREFcZIyb8JxZilOXZV3H4QQy3B0iEHrHk1COLH/NxEvBLU38QT/j062skBw1Iq+a22D0l88VIs838T9jpKY49pB3O5tlv2TsUJr0yGhXQEgBqgbw8otze4iwtTT35GHdcRQNrrynSuj3FwzNnJfBNo6g33g3yxSX+/o6p0kE91EKtsas6DkS63Vgf8uGhaGuRzfzTy6ftT8dC1+IWY/S46bX01psUPG1fHfem2xIb2K2UQXLIggXnLPe70DlMbTX1ANmbDAdewr6GCU7Bm798crkId/bc5M79VVgJwMPjIjnrMsvESpW5WGJcYtqAPTvQi/BIWi6ynNdRoYNgduoJbsM8h2Ztm0KYMs1hLxUKi20yuXOBA7bmG+mX/orhK/PuzzWpUW7d4SxOre7SONcve6tVDl/cQ5neZQdfdtHXeqdkOwEPpIwPlwwWBv4OQLJVK/5ek9G/JgEg3MDp3wcKjsO399CeGnt5CBnxgYKXQMLKwODN4gCpoS3aEYFKs8GYOw5cPT05bcwD46YlxZLrIvDpGU0bWEbUTatAt+pjltGaTmoFIrce9g5+JXF7qSturn36W9IQrneHRqGVM4uE6Pp/2Adi3xXUtW9GAta9RzDFXU/iGzZ+JJ8EeHqRFPv7c/5TfdbIfG87Wpf8o19p1AMOvAIdmkRJE+Uc5kUEdsVCc/NSvOJVSIkgjK28BploiiscBxKxPTNf6deT+vQz67ajdnu+WLXDSEgQifZ1rPrQ0oUGBobVzQxoDaITXbRsqvkLYKK7CyRF7jtWFa7QTGecP+lO0l9bsak2cl94tIJyZmoUwFFfw+74WCe+0IQ7FjeN7ivNxe7Ui8/5GkAv3TMOoOqq0niTEOk608cCiC/pqcyc4Jq2'};
 function d64(x){return Uint8Array.from(atob(x),function(c){return c.charCodeAt(0)})}
 function sha(t){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')})}
 function vault(pin){return crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveKey']).then(function(k){return crypto.subtle.deriveKey({name:'PBKDF2',salt:d64(V.s),iterations:600000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt'])}).then(function(k){return crypto.subtle.decrypt({name:'AES-GCM',iv:d64(V.i)},k,d64(V.c))}).then(function(p){return JSON.parse(new TextDecoder().decode(p))})}
-function check(kind,pin){return kind==='ae'?vault(pin):sha('system:'+pin).then(function(h){if(h!==HASH)throw 0;return true})}
+function check(kind,pin){return kind!=='mb'?vault(pin):sha('system:'+pin).then(function(h){if(h!==HASH)throw 0;return true})}
 function saved(){try{return sessionStorage.getItem('sys-pin')||''}catch(e){return ''}}
 function save(p){try{sessionStorage.setItem('sys-pin',p)}catch(e){}}
 var g=document.getElementById('grid'),home=document.getElementById('home'),sub=document.getElementById('sub'),sg=document.getElementById('subgrid'),dlg=document.getElementById('pin'),inp=document.getElementById('pinIn'),err=document.getElementById('pinErr'),pend=null,busy=false;
@@ -61,12 +62,16 @@ var ICONS={
  'Assessment and Evidence':'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m21 21-5.2-5.2"/><path d="m7.8 10.6 2 2 3.4-3.8"/>',
  'Portfolio site':'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/><path d="M7 13h6M7 16h10"/>',
  'Pupil folders':'<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+ 'KCS Dojo Rewards':'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+ 'Dojo rewards app':'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+ 'Dojo sheet':'<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 4v16"/>',
+ 'Dojo uploads':'<path d="M12 16V5"/><path d="m7.5 9.5 4.5-4.5 4.5 4.5"/><path d="M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15"/>',
  'Pupil data':'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>'
 };
 function logo(t){var p=ICONS[t.title]||'<circle cx="12" cy="12" r="8"/>';return '<span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg></span>'}
 function card(t,tag,extra){var a=document.createElement(tag);a.className='card';a.style.setProperty('--c',t.color);a.innerHTML=logo(t)+'<span class="tag"></span><h2></h2><p></p><span class="go"></span>';a.querySelector('.tag').textContent=(extra?'🔒 ':'')+t.tag;a.querySelector('h2').textContent=t.title;a.querySelector('p').textContent=t.text;a.querySelector('.go').textContent=t.btn;return a}
 function proceed(kind,res,t){if(kind==='mb'){location.href=t.url;return}
-  sg.innerHTML='';res.forEach(function(p){var a=card(p,'a');a.href=p.url;a.target='_blank';a.rel='noopener';sg.appendChild(a)});home.hidden=true;sub.hidden=false;window.scrollTo(0,0)}
+  document.getElementById('subT').textContent=t.title;document.getElementById('subS').textContent=kind==='dj'?'Choose where to go. These open in a new tab.':'Choose where to go. These open in a new tab.';sg.innerHTML='';res[kind].forEach(function(p){var a=card(p,'a');a.href=p.url;a.target='_blank';a.rel='noopener';sg.appendChild(a)});home.hidden=true;sub.hidden=false;window.scrollTo(0,0)}
 function ask(t){pend=t;var p=saved();if(p){check(t.kind,p).then(function(r){proceed(t.kind,r,t)},function(){show()});return}show()}
 function show(){inp.value='';err.textContent='';dlg.showModal();inp.focus()}
 document.getElementById('pinForm').addEventListener('submit',function(e){e.preventDefault();if(busy)return;busy=true;var p=inp.value.trim();err.textContent='Checking…';
